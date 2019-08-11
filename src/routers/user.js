@@ -1,28 +1,17 @@
 const express  =  require('express')
 const router  = new express.Router()
 const User = require('../models/user.js')
-const jwt = require('jsonwebtoken') 
+const auth = require('../middleware/auth.js')
 
 
-router.post('/users',async (req,res)=>{
-    const user = new User(req.body); 
-    try {
-        await user.save()
-        const token  = await user.generateAuthToken()
-        res.status(201).send({user,token})
-    } catch (e) {
-        console.log(e)
-        res.status(400).send(e)
-    }
-})
-
-router.get('/users',async (req,res)=>{
-    try {
-        const users = await User.find({});
-        res.status(201).send(users)
-    } catch (e) {
-        res.status(400).send(e)
-    }
+router.get('/users/me', auth, async (req,res)=>{
+    // try {
+    //     const users = await User.find({});
+    //     res.status(201).send(users)
+    // } catch (e) {
+    //     res.status(400).send(e)
+    // }
+    res.send(req.user)
 })
 
 router.get('/users/:id',async (req,res)=>{ 
@@ -80,7 +69,7 @@ router.delete('/users/:id',async (req,res)=>{
     }
 })
 
-
+//sign in
 router.post('/users/login',async(req,res)=>{
     try {
         const user = await User.findByCred(req.body.email,req.body.password);
@@ -91,6 +80,19 @@ router.post('/users/login',async(req,res)=>{
         res.status(404).send(e)
         }
     })
+
+//sign up
+router.post('/users',async (req,res)=>{
+    const user = new User(req.body); 
+    try {
+        await user.save()
+        const token  = await user.generateAuthToken()
+        res.status(201).send({user,token})
+    } catch (e) {
+        console.log(e)
+        res.status(400).send(e)
+    }
+})
 
 
 module.exports = router

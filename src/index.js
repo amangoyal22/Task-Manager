@@ -6,14 +6,14 @@ require('./db/mongoose.js')
 const userRouter = require('./routers/user.js')
 const taskRouter = require('./routers/task.js')
 
-app.use((req,res,next)=>{
-    console.log(req.method,req.path)
-    if(req.method === 'GET') {
-        res.send(req.method,req.path)
-    } else{s
-        next()
-    }
-})
+// app.use((req,res,next)=>{
+//     console.log(req.method,req.path)
+//     if(req.method === 'GET') {
+//         res.send(req.method,req.path)
+//     } else{s
+//         next()
+//     }
+// })
 
 app.use(express.json())
 app.use(userRouter)
