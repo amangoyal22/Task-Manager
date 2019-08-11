@@ -16,13 +16,13 @@ app.listen(port,()=>{
     console.log('server is running on port '  + port)
 })
 
+const jwt = require('jsonwebtoken') 
 
-// const myFuntion  = async () => {
-//     const pass = 'hello'
-//     const encpass = await bcrpyt.hash(pass,8)
-//     console.log(encpass)
-//     const isMatch = await bcrpyt.compare('pass',encpass)
-//     console.log(isMatch)
-// }
+const myFuntion  = async () => {
+    const token = jwt.sign({_id :'123'},'thisismynewcourse',{expiresIn : '10 seconds'})
+    console.log(token)
+    const payLoad = jwt.verify(token,'thisismynewcourse')
+    console.log(payLoad)
+}
 
-// myFuntion();
+myFuntion();
