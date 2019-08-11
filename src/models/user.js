@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrpyt = require('bcryptjs')
+const jwt = require('jsonwebtoken') 
+
 
 const userSchema = new mongoose.Schema({
     name : {
@@ -34,7 +36,21 @@ const userSchema = new mongoose.Schema({
                 throw new Error("Can't be Password");
             } 
         } 
+    },
+    tokens : [{
+        token : {
+            type : String,
+            required : true
+                }
+            }]
+})
+
+userSchema.pre('save', async function (next){
+    const user = this
+    if (user.isModified('password')) {
+        user.password = await bcrpyt.hash(user.password,8)
     }
+    next()
 })
 
 userSchema.statics.findByCred = async (email, password) => {
@@ -51,13 +67,25 @@ userSchema.statics.findByCred = async (email, password) => {
 }
 
 
-userSchema.pre('save', async function (next){
+userSchema.methods.generateAuthToken = async function () {
     const user = this
-    if (user.isModified('password')) {
-        user.password = await bcrpyt.hash(user.password,8)
-    }
-    next()
-})
+    const token = jwt.sign({ _id: user._id.toString() }, 'thisismynewcourse')
+
+    user.tokens = user.tokens.concat({ token })
+    await user.save()
+
+    return token
+}
+
+userSchema.methods.toJSON = function () {
+    const user = this
+    const userObject = user.toObject()
+    delete userObject.password
+    delete userObject.tokens
+    
+    return userObject
+}
+
 const User = mongoose.model('User',userSchema)
 //userSchema.post()
 
