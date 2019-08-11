@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrpyt = require('bcryptjs')
 const jwt = require('jsonwebtoken') 
+const Task = require('../models/task.js')
 
 
 const userSchema = new mongoose.Schema({
@@ -45,11 +46,25 @@ const userSchema = new mongoose.Schema({
             }]
 })
 
+userSchema.virtual('tasks',{
+    ref : 'Task',
+    localField : '_id',
+    foreignField: 'owner'
+})
+
+// save middleware
 userSchema.pre('save', async function (next){
     const user = this
     if (user.isModified('password')) {
         user.password = await bcrpyt.hash(user.password,8)
     }
+    next()
+})
+
+// delete task middleware
+userSchema.pre('remove', async function (next){
+    const user = this
+    await Task.deleteMany({owner:user._id})
     next()
 })
 

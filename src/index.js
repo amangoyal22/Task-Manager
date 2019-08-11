@@ -5,6 +5,9 @@ const port = process.env.PORT || 3000
 require('./db/mongoose.js')
 const userRouter = require('./routers/user.js')
 const taskRouter = require('./routers/task.js')
+const Task = require('./models/task.js')
+const User = require('./models/user.js')
+
 
 // app.use((req,res,next)=>{
 //     console.log(req.method,req.path)
@@ -32,6 +35,15 @@ app.listen(port,()=>{
 //     console.log(token)
 //     const payLoad = jwt.verify(token,'thisismynewcourse')
 //     console.log(payLoad)
+// }
+
+// const myFuntion  = async () => {
+// //    const task = await Task.findById('5d505a586a0fe65654dffde6')
+// //    await task.populate('owner').execPopulate()
+// //    console.log(task)
+//     const user = await User.findById('5d5056b909cd9c522c845992')
+//     await user.populate('tasks').execPopulate()
+//     console.log(user.tasks)
 // }
 
 // myFuntion();
