@@ -3,7 +3,34 @@ const router  = new express.Router()
 const User = require('../models/user.js')
 const auth = require('../middleware/auth.js')
 
-// self
+//sign up
+router.post('/users',async (req,res)=>{
+    const user = new User(req.body); 
+    try {
+        await user.save()
+        const token  = await user.generateAuthToken()
+        res.status(201).send({user,token})
+    } catch (e) {
+        console.log(e)
+        res.status(400).send(e)
+    }
+})
+
+
+//sign in
+router.post('/users/login',async(req,res)=>{
+    try {
+        const user = await User.findByCred(req.body.email,req.body.password);
+        const jwt  = await user.generateAuthToken();
+        res.send({user,jwt })
+        } catch (e) {
+        console.log(e)
+        res.status(404).send(e)
+        }
+    })
+
+
+// profile
 router.get('/users/me', auth, async (req,res)=>{
     // try {
     //     const users = await User.find({});
@@ -57,30 +84,6 @@ router.delete('/users/me',auth,async (req,res)=>{
     }
 })
 
-//sign in
-router.post('/users/login',async(req,res)=>{
-    try {
-        const user = await User.findByCred(req.body.email,req.body.password);
-        const jwt  = await user.generateAuthToken();
-        res.send({user,jwt })
-        } catch (e) {
-        console.log(e)
-        res.status(404).send(e)
-        }
-    })
-
-//sign up
-router.post('/users',async (req,res)=>{
-    const user = new User(req.body); 
-    try {
-        await user.save()
-        const token  = await user.generateAuthToken()
-        res.status(201).send({user,token})
-    } catch (e) {
-        console.log(e)
-        res.status(400).send(e)
-    }
-})
 
 //logout
 router.post('/users/logout',auth,async(req,res)=>{
