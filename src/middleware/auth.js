@@ -4,7 +4,6 @@ const User = require('../models/user.js')
 
 const auth = async (req,res,next) => {
     try {
-
         const token = req.header('Authorization').replace('Bearer ','')
         const decode = jwt.verify(token,'thisismynewcourse')
         //console.log(decode._id)
