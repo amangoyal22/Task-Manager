@@ -8,7 +8,15 @@ const taskRouter = require('./routers/task.js')
 const Task = require('./models/task.js')
 const User = require('./models/user.js')
 
+// const multer = require('multer')
 
+// const upload = multer ({
+//     dest : 'images'
+// })
+
+// app.post('/upload',upload.single('upload'),(req,res) => {
+//     res.send()
+// })
 // app.use((req,res,next)=>{
 //     console.log(req.method,req.path)
 //     if(req.method === 'GET') {
